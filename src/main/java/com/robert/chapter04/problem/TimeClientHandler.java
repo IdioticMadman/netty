@@ -1,31 +1,32 @@
-package com.robert.chatper03;
+package com.robert.chapter04.problem;
 
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Logger;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 
-public class TimeClientHandler extends ChannelHandlerAdapter {
+public class TimeClientHandler extends ChannelInboundHandlerAdapter {
 
     private static final Logger logger = Logger.getLogger(TimeClientHandler.class.getName());
 
-    private final ByteBuf firstMessage;
+    private final byte[] mReq;
 
     public TimeClientHandler() {
-        byte[] req = "QUERY TIME ORDER".getBytes();
-        this.firstMessage = Unpooled.buffer(req.length);
-        //写入消息
-        firstMessage.writeBytes(req);
+        mReq = ("QUERY TIME ORDER" + System.getProperty("line.separator")).getBytes();
     }
 
     //TCP链路连接成功
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         //发送消息
-        ctx.writeAndFlush(firstMessage);
+        for (int i = 0; i < 100; i++) {
+            ByteBuf msg = Unpooled.buffer(mReq.length);
+            msg.writeBytes(mReq);
+            ctx.writeAndFlush(msg);
+        }
     }
 
     @Override

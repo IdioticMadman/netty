@@ -1,14 +1,17 @@
-package com.robert.chatper03;
+package com.robert.chapter04.solve;
 
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
+import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.LineBasedFrameDecoder;
+import io.netty.handler.codec.string.StringDecoder;
 
 public class TimeClient {
 
@@ -32,7 +35,10 @@ public class TimeClient {
                     .handler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
-                            ch.pipeline().addLast(new TimeClientHandler());
+                            ChannelPipeline pipeline = ch.pipeline();
+                            pipeline.addLast(new LineBasedFrameDecoder(1024));
+                            pipeline.addLast(new StringDecoder());
+                            pipeline.addLast(new TimeClientHandler());
                         }
                     });
             ChannelFuture future = bootstrap.connect(host, port).sync();
