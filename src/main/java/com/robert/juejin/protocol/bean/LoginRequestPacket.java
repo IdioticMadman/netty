@@ -1,4 +1,4 @@
-package com.robert.juejin.protocol.request;
+package com.robert.juejin.protocol.bean;
 
 import com.robert.juejin.protocol.command.Command;
 import com.robert.juejin.protocol.packet.Packet;

@@ -8,7 +8,6 @@ public class JSONSerializer implements Serializer {
    
     @Override
     public byte getSerializerAlgorithm() {
-        
         return SerializerAlgorithm.JSON;
     } 
 

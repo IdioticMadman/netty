@@ -1,12 +1,13 @@
 package com.robert.juejin.protocol;
 
+import com.robert.juejin.protocol.bean.LoginRequestPacket;
+import com.robert.juejin.protocol.bean.MessageRequestPacket;
 import com.robert.juejin.protocol.handler.Spliter;
 import com.robert.juejin.protocol.handler.inbound.PacketDecoder;
 import com.robert.juejin.protocol.handler.outbound.PacketEncoder;
-import com.robert.juejin.protocol.request.MessageRequestPacket;
 import com.robert.juejin.protocol.response.handler.LoginResponseHandler;
 import com.robert.juejin.protocol.response.handler.MessageResponseHandler;
-import com.robert.juejin.protocol.util.LoginUtil;
+import com.robert.juejin.protocol.util.SessionUtil;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -71,17 +72,31 @@ public class NettyClient {
     }
 
     private static void startConsoleThread(Channel channel) {
+        Scanner sc = new Scanner(System.in);
         new Thread(() -> {
             while (!Thread.interrupted()) {
-                if (LoginUtil.hasLogin(channel)) {
-                    System.out.println("输入消息发送至服务端: ");
-                    Scanner sc = new Scanner(System.in);
+                if (!SessionUtil.hashSession(channel)) {
+                    System.out.println("请输入用户名登录: ");
+                    LoginRequestPacket packet = new LoginRequestPacket();
                     String line = sc.nextLine();
-                    MessageRequestPacket packet = new MessageRequestPacket();
-                    packet.setMessage(line);
+                    packet.setUsername(line);
+                    packet.setPassword("pwd");
                     channel.writeAndFlush(packet);
+                    waitForLogin();
+                } else {
+                    String toUserId = sc.nextLine();
+                    String message = sc.nextLine();
+                    channel.writeAndFlush(new MessageRequestPacket(toUserId, message));
                 }
             }
         }).start();
+    }
+
+    private static void waitForLogin() {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

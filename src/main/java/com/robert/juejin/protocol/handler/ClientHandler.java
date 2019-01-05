@@ -2,9 +2,9 @@ package com.robert.juejin.protocol.handler;
 
 import com.robert.juejin.protocol.packet.Packet;
 import com.robert.juejin.protocol.packet.PacketCodeC;
-import com.robert.juejin.protocol.request.LoginRequestPacket;
-import com.robert.juejin.protocol.response.LoginResponsePacket;
-import com.robert.juejin.protocol.response.MessageResponsePacket;
+import com.robert.juejin.protocol.bean.LoginRequestPacket;
+import com.robert.juejin.protocol.bean.LoginResponsePacket;
+import com.robert.juejin.protocol.bean.MessageResponsePacket;
 import com.robert.juejin.protocol.util.LoginUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;

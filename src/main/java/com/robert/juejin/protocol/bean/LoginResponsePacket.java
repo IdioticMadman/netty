@@ -1,4 +1,4 @@
-package com.robert.juejin.protocol.response;
+package com.robert.juejin.protocol.bean;
 
 import com.robert.juejin.protocol.command.Command;
 import com.robert.juejin.protocol.packet.Packet;
@@ -7,12 +7,15 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = false)
 @Data
-public class MessageResponsePacket extends Packet {
+public class LoginResponsePacket extends Packet {
+    private boolean success;
 
-    private String message;
+    private String userId;
+    private String userName;
+    private String reason;
 
     @Override
     public Byte getCommand() {
-        return Command.MESSAGE_RESPONSE;
+        return Command.LOGIN_RESPONSE;
     }
 }
