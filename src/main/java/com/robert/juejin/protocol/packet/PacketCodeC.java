@@ -1,10 +1,7 @@
 package com.robert.juejin.protocol.packet;
 
+import com.robert.juejin.protocol.bean.*;
 import com.robert.juejin.protocol.command.Command;
-import com.robert.juejin.protocol.bean.LoginRequestPacket;
-import com.robert.juejin.protocol.bean.MessageRequestPacket;
-import com.robert.juejin.protocol.bean.LoginResponsePacket;
-import com.robert.juejin.protocol.bean.MessageResponsePacket;
 import com.robert.juejin.protocol.serialize.Serializer;
 import com.robert.juejin.protocol.serialize.json.JSONSerializer;
 import io.netty.buffer.ByteBuf;
@@ -27,6 +24,9 @@ public class PacketCodeC {
 
         packetTypeMap.put(Command.MESSAGE_REQUEST, MessageRequestPacket.class);
         packetTypeMap.put(Command.MESSAGE_RESPONSE, MessageResponsePacket.class);
+
+        packetTypeMap.put(Command.CREATE_GROUP_REQUEST, CreateGroupRequestPacket.class);
+        packetTypeMap.put(Command.CREATE_GROUP_RESPONSE, CreateGroupResponsePacket.class);
 
         serializerMap = new HashMap<>();
 

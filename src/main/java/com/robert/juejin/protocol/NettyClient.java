@@ -1,10 +1,12 @@
 package com.robert.juejin.protocol;
 
-import com.robert.juejin.protocol.bean.LoginRequestPacket;
 import com.robert.juejin.protocol.bean.MessageRequestPacket;
+import com.robert.juejin.protocol.console.ConsoleCommandManager;
+import com.robert.juejin.protocol.console.impl.LoginConsoleCommand;
 import com.robert.juejin.protocol.handler.Spliter;
 import com.robert.juejin.protocol.handler.inbound.PacketDecoder;
 import com.robert.juejin.protocol.handler.outbound.PacketEncoder;
+import com.robert.juejin.protocol.response.handler.CreateGroupResponseHandler;
 import com.robert.juejin.protocol.response.handler.LoginResponseHandler;
 import com.robert.juejin.protocol.response.handler.MessageResponseHandler;
 import com.robert.juejin.protocol.util.SessionUtil;
@@ -41,8 +43,10 @@ public class NettyClient {
                         pipeline.addLast("frameDecoder", new Spliter());
                         //解码
                         pipeline.addLast("packDecoder", new PacketDecoder());
+                        //业务
                         pipeline.addLast("loginHandler", new LoginResponseHandler());
                         pipeline.addLast("messageHandler", new MessageResponseHandler());
+                        pipeline.addLast("createGroupHandler", new CreateGroupResponseHandler());
                         //编码
                         pipeline.addLast("packEncoder", new PacketEncoder());
                     }
@@ -72,17 +76,14 @@ public class NettyClient {
     }
 
     private static void startConsoleThread(Channel channel) {
+        ConsoleCommandManager manager = new ConsoleCommandManager();
+        LoginConsoleCommand loginConsoleCommand = new LoginConsoleCommand();
+
         Scanner sc = new Scanner(System.in);
         new Thread(() -> {
             while (!Thread.interrupted()) {
                 if (!SessionUtil.hashSession(channel)) {
-                    System.out.println("请输入用户名登录: ");
-                    LoginRequestPacket packet = new LoginRequestPacket();
-                    String line = sc.nextLine();
-                    packet.setUsername(line);
-                    packet.setPassword("pwd");
-                    channel.writeAndFlush(packet);
-                    waitForLogin();
+                    loginConsoleCommand.exec(sc, channel);
                 } else {
                     String toUserId = sc.nextLine();
                     String message = sc.nextLine();
@@ -92,11 +93,4 @@ public class NettyClient {
         }).start();
     }
 
-    private static void waitForLogin() {
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
 }

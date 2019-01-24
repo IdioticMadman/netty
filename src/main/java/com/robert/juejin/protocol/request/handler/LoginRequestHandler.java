@@ -3,12 +3,12 @@ package com.robert.juejin.protocol.request.handler;
 import com.robert.juejin.protocol.bean.LoginRequestPacket;
 import com.robert.juejin.protocol.bean.LoginResponsePacket;
 import com.robert.juejin.protocol.bean.Session;
+import com.robert.juejin.protocol.util.IDUtil;
 import com.robert.juejin.protocol.util.SessionUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
 import java.util.Date;
-import java.util.UUID;
 
 public class LoginRequestHandler extends SimpleChannelInboundHandler<LoginRequestPacket> {
 
@@ -23,15 +23,12 @@ public class LoginRequestHandler extends SimpleChannelInboundHandler<LoginReques
         ctx.channel().writeAndFlush(packet);
     }
 
-    private String randomUserId() {
-        return UUID.randomUUID().toString().split("-")[0];
-    }
 
     private LoginResponsePacket login(LoginRequestPacket msg) {
         LoginResponsePacket response = new LoginResponsePacket();
         response.setVersion(msg.getVersion());
         if (valid(msg)) {
-            response.setUserId(randomUserId());
+            response.setUserId(IDUtil.randomUserId());
             response.setUserName(msg.getUsername());
             response.setSuccess(true);
             System.out.println(new Date() + ": 登录成功!");

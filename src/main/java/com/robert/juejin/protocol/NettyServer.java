@@ -4,6 +4,7 @@ import com.robert.juejin.protocol.handler.AuthHandler;
 import com.robert.juejin.protocol.handler.Spliter;
 import com.robert.juejin.protocol.handler.inbound.PacketDecoder;
 import com.robert.juejin.protocol.handler.outbound.PacketEncoder;
+import com.robert.juejin.protocol.request.handler.CreateGroupRequestHandler;
 import com.robert.juejin.protocol.request.handler.LoginRequestHandler;
 import com.robert.juejin.protocol.request.handler.MessageRequestHandler;
 import io.netty.bootstrap.ServerBootstrap;
@@ -48,9 +49,11 @@ public class NettyServer {
                         pipeline.addLast("frameDecoder", new Spliter());
                         //解码
                         pipeline.addLast("packDecoder", new PacketDecoder());
+                        //业务处理包
                         pipeline.addLast("loginHandler", new LoginRequestHandler());
                         pipeline.addLast("authHandler", new AuthHandler());
                         pipeline.addLast("messageHandler", new MessageRequestHandler());
+                        pipeline.addLast("createGroupHandler", new CreateGroupRequestHandler());
                         //编码
                         pipeline.addLast("packEncoder", new PacketEncoder());
                     }

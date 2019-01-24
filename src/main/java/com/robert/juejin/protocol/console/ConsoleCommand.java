@@ -1,4 +1,4 @@
-package com.robert.juejin.protocol.command;
+package com.robert.juejin.protocol.console;
 
 import io.netty.channel.Channel;
 
